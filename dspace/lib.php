@@ -53,6 +53,9 @@ class repository_dspace extends repository {
         if((count($pathArray)== 1 || (count($pathArray) == 2 && $pathArray[1] == "") )) {
             $results = $this->call_api("GET", "communities");
             foreach($results as $result) {
+            	if ($result->countItems == 0) {
+            		continue;
+            	}
                 $list['list'][] = array(
 					'dynload'=>true,
                     'title' => $result->name,
@@ -67,6 +70,9 @@ class repository_dspace extends repository {
 		$results = $this->call_api("GET", "communities/".$pathArray[1]."/?expand=collections");
 			
             foreach($results->collections as $result) {
+            	if ($result->numberItems == 0) {
+            		continue;
+            	}
                 $list['list'][] = array(
                     'title' => $result->name,
                     'children'=> array(),
