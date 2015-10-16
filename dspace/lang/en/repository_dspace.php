@@ -9,7 +9,7 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 defined('MOODLE_INTERNAL') || die();
-$string['pluginname'] = "Dspace Repository";
-$string['configplugin'] = "Dspace Repository settings";
-$string['dspace:view'] = 'View the dSpace repository';
-$string['dspace_url'] = 'Dspace REST API URL';
+$string['pluginname'] = "DSpace Repository";
+$string['configplugin'] = "DSpace Repository settings";
+$string['dspace:view'] = 'View the DSpace repository';
+$string['dspace_url'] = 'DSpace REST API URL';

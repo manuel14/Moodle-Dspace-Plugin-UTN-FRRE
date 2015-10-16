@@ -6,13 +6,13 @@ class repository_dspace extends repository {
 	
     public function __construct($repositoryid, $context = SYSCONTEXTID, $options = array(), $readonly=0) {
         parent::__construct($repositoryid, $context, $options, $readonly);
-        $this->api_url = $this->get_option('dspace_url');
+        $this->rest_url = $this->get_option('dspace_url');
     }
 
     // Fixed settings
 
     function supported_returntypes() {
-        return FILE_REFERENCE|FILE_INTERNAL|FILE_EXTERNAL;
+        return FILE_REFERENCE|FILE_EXTERNAL;
     }
 
     function supported_filetypes() {
@@ -23,7 +23,7 @@ class repository_dspace extends repository {
 
     public static function get_type_option_names() {
         /*return array_merge(parent::get_type_option_names(), array('dspace_url'));*/
-		$option_names = array('dspace_url');
+		$option_names = array_merge(parent::get_type_option_names(), array('dspace_url'));
 
         return $option_names;
     }
@@ -42,10 +42,6 @@ class repository_dspace extends repository {
 
     function get_listing($path="/", $page="") {
 		
-		
-		
-	
-		
 		$pathArray = explode("/", $path);
 
         $list = array();
@@ -56,7 +52,6 @@ class repository_dspace extends repository {
 
         if((count($pathArray)== 1 || (count($pathArray) == 2 && $pathArray[1] == "") )) {
             $results = $this->call_api("GET", "communities");
-			
             foreach($results as $result) {
                 $list['list'][] = array(
 					'dynload'=>true,
@@ -80,7 +75,7 @@ class repository_dspace extends repository {
 		$list['path'] = array(array('name'=>'collections','path'=>'/'), array('name'=>$pathArray[1], 'path'=>'/'.$pathArray[1]));
        } elseif(count($pathArray) == 3) {
 	   
-		$results = $this->call_api("GET", "collections/".$pathArray[1]."/?expand=items");
+		$results = $this->call_api("GET", "collections/".$pathArray[2]."/?expand=items");
 			
             foreach($results->items as $result) {
                 $list['list'][] = array(
