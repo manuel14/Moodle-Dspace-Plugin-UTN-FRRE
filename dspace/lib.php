@@ -60,6 +60,7 @@ class repository_dspace extends repository {
 					'dynload'=>true,
                     'title' => $result->name,
                     'children'=> array(),
+                	'thumbnail' => $OUTPUT->pix_url(file_folder_icon(64))->out(false),
 					'path' => "/".$result->id);
             } 
 			$list['path'] = array(array('name'=>'communities','path'=>'/'));
@@ -76,6 +77,7 @@ class repository_dspace extends repository {
                 $list['list'][] = array(
                     'title' => $result->name,
                     'children'=> array(),
+                    'thumbnail' => $OUTPUT->pix_url(file_folder_icon(64))->out(false),
 					'path' => "/".$pathArray[1]."/".$result->id);
             } 
 		$list['path'] = array(array('name'=>'collections','path'=>'/'), array('name'=>$pathArray[1], 'path'=>'/'.$pathArray[1]));
@@ -87,6 +89,7 @@ class repository_dspace extends repository {
                 $list['list'][] = array(
                     'title' => $result->name,
                     'children'=> array(),
+                    'thumbnail' => $OUTPUT->pix_url(file_folder_icon(64))->out(false),
 					'path' => "/".$pathArray[1]."/".$result->id . "/");
             } 
 		$list['path'] = array(array('name'=>'items','path'=>'/'), array('name'=>$pathArray[1], 'path'=>'/'.$pathArray[1]));
