@@ -15,7 +15,7 @@ class repository_dspace extends repository {
         return FILE_REFERENCE|FILE_EXTERNAL;
     }
 
-    function supported_filetypes() {
+    function supported_filetypes()	 {
         return '*';
     }
 
@@ -41,7 +41,7 @@ class repository_dspace extends repository {
     // Listing
 
     function get_listing($path="/", $page="") {
-		
+    	global $OUTPUT;
 		$pathArray = explode("/", $path);
 
         $list = array();
@@ -95,14 +95,19 @@ class repository_dspace extends repository {
 	   elseif(count($pathArray) == 4) {
 	   
 	   
-		$results = $this->call_api("GET", "items/".$pathArray[2]."/?expand=bitstreams");
+		$results = $this->call_api("GET", "items/".$pathArray[2]."/?expand=bitstreams,metadata");
 			
-            foreach($results->bitstreams as $result) {
-                $list['list'][] = array(
-                    'title' => $result->name,
-					'url' => $this->rest_url."bitstreams/".$result->id."/retrieve",
-					'source' => $this->rest_url."bitstreams/".$result->id."/retrieve");
-            } 
+        foreach($results->bitstreams as $result) {
+            $list['list'][] = array(
+                'title' => $result->name,
+            	'url' => $this->rest_url."bitstreams/".$result->id."/retrieve",
+				'source' => $this->rest_url."bitstreams/".$result->id."/retrieve",
+                'thumbnail' => $OUTPUT->pix_url(file_extension_icon($result->name, 64))->out(false),
+                'realthumbnail' => $thumbnail,
+                'thumbnail_height' => 64,
+                'thumbnail_width' => 64
+           );
+        }
 		$list['path'] = array(array('name'=>'bitstreams','path'=>'/'), array('name'=>$pathArray[1], 'path'=>'/'.$pathArray[1]));
       }
 
