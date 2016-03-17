@@ -1,9 +1,9 @@
-<?php
+	<?php
 
 class repository_dspace extends repository {
 
-	public $rest_url = "http://localhost:8080/rest/";
-	
+    public $rest_url = "http://localhost:8080/rest/";
+    
     public function __construct($repositoryid, $context = SYSCONTEXTID, $options = array(), $readonly=0) {
         parent::__construct($repositoryid, $context, $options, $readonly);
         $this->rest_url = $this->get_option('dspace_url');
@@ -12,10 +12,10 @@ class repository_dspace extends repository {
     // Fixed settings
 
     function supported_returntypes() {
-        return FILE_REFERENCE|FILE_EXTERNAL;
+        return FILE_REFERENCE;
     }
 
-    function supported_filetypes()	 {
+    function supported_filetypes()   {
         return '*';
     }
 
@@ -23,17 +23,17 @@ class repository_dspace extends repository {
 
     public static function get_type_option_names() {
         /*return array_merge(parent::get_type_option_names(), array('dspace_url'));*/
-		$option_names = array_merge(parent::get_type_option_names(), array('dspace_url'));
+        $option_names = array_merge(parent::get_type_option_names(), array('dspace_url'));
 
         return $option_names;
     }
 
     public static function type_config_form($mform) {
         parent::type_config_form($mform);
-	
+    
         $dspaceUrl = get_config('repository_dspace', 'dspace_url');
-		
-		
+        
+        
         $mform->addElement('text', 'dspace_url', get_string('dspace_url', 'repository_dspace'), array('value' => $dspaceUrl,'size' => '60'));
         
     }
@@ -41,8 +41,8 @@ class repository_dspace extends repository {
     // Listing
 
     function get_listing($path="/", $page="") {
-    	global $OUTPUT;
-		$pathArray = explode("/", $path);
+        global $OUTPUT;
+        $pathArray = explode("/", $path);
 
         $list = array();
         $list['nologin'] = true;
@@ -53,82 +53,82 @@ class repository_dspace extends repository {
         if((count($pathArray)== 1 || (count($pathArray) == 2 && $pathArray[1] == "") )) {
             $results = $this->call_api("GET", "communities");
             foreach($results as $result) {
-            	if ($result->countItems == 0) {
-            		continue;
-            	}
+                if ($result->countItems == 0) {
+                    continue;
+                }
                 $list['list'][] = array(
-					'dynload'=>true,
+                    'dynload'=>true,
                     'title' => $result->name,
                     'children'=> array(),
-                	'thumbnail' => $OUTPUT->pix_url(file_folder_icon(64))->out(false),
-					'path' => "/".$result->id);
+                    'thumbnail' => $OUTPUT->pix_url(file_folder_icon(64))->out(false),
+                    'path' => "/".$result->id);
             } 
-			$list['path'] = array(array('name'=>'communities','path'=>'/'));
+            $list['path'] = array(array('name'=>'communities','path'=>'/'));
 
-			
+            
        } elseif(count($pathArray) == 2) {
-	  
-		$results = $this->call_api("GET", "communities/".$pathArray[1]."/?expand=collections");
-			
+      
+        $results = $this->call_api("GET", "communities/".$pathArray[1]."/?expand=collections");
+            
             foreach($results->collections as $result) {
-            	if ($result->numberItems == 0) {
-            		continue;
-            	}
+                if ($result->numberItems == 0) {
+                    continue;
+                }
                 $list['list'][] = array(
                     'title' => $result->name,
                     'children'=> array(),
                     'thumbnail' => $OUTPUT->pix_url(file_folder_icon(64))->out(false),
-					'path' => "/".$pathArray[1]."/".$result->id);
+                    'path' => "/".$pathArray[1]."/".$result->id);
             } 
-		$list['path'] = array(array('name'=>'collections','path'=>'/'), array('name'=>$pathArray[1], 'path'=>'/'.$pathArray[1]));
+        $list['path'] = array(array('name'=>'collections','path'=>'/'), array('name'=>$pathArray[1], 'path'=>'/'.$pathArray[1]));
        } elseif(count($pathArray) == 3) {
-	   
-		$results = $this->call_api("GET", "collections/".$pathArray[2]."/?expand=items");
-			
+       
+        $results = $this->call_api("GET", "collections/".$pathArray[2]."/?expand=items");
+            
             foreach($results->items as $result) {
                 $list['list'][] = array(
                     'title' => $result->name,
                     'children'=> array(),
                     'thumbnail' => $OUTPUT->pix_url(file_folder_icon(64))->out(false),
-					'path' => "/".$pathArray[1]."/".$result->id . "/");
+                    'path' => "/".$pathArray[1]."/".$result->id . "/");
             } 
-		$list['path'] = array(array('name'=>'items','path'=>'/'), array('name'=>$pathArray[1], 'path'=>'/'.$pathArray[1]));
+        $list['path'] = array(array('name'=>'items','path'=>'/'), array('name'=>$pathArray[1], 'path'=>'/'.$pathArray[1]));
        } 
-	   
-	   elseif(count($pathArray) == 4) {
-	   
-	   
-		$results = $this->call_api("GET", "items/".$pathArray[2]."/?expand=bitstreams,metadata");
-			
+       
+       elseif(count($pathArray) == 4) {
+       
+       
+        $results = $this->call_api("GET", "items/".$pathArray[2]."/?expand=bitstreams,metadata");
+            
         foreach($results->bitstreams as $result) {
             $list['list'][] = array(
                 'title' => $result->name,
-            	'url' => $this->rest_url."bitstreams/".$result->id."/retrieve",
-				'source' => $this->rest_url."bitstreams/".$result->id."/retrieve",
+                'url' => $this->rest_url."bitstreams/".$result->id."/retrieve",
+                'source' => $this->rest_url."bitstreams/".$result->id."/retrieve",
                 'thumbnail' => $OUTPUT->pix_url(file_extension_icon($result->name, 64))->out(false),
                 'realthumbnail' => $thumbnail,
                 'thumbnail_height' => 64,
                 'thumbnail_width' => 64
            );
         }
-		$list['path'] = array(array('name'=>'bitstreams','path'=>'/'), array('name'=>$pathArray[1], 'path'=>'/'.$pathArray[1]));
+        $list['path'] = array(array('name'=>'bitstreams','path'=>'/'), array('name'=>$pathArray[1], 'path'=>'/'.$pathArray[1]));
       }
 
         return $list; 
-		
+        
     
-		
+        
     }
 
     // REST
 
     function call_api($method, $endpoint, $data = false)
     {
-	
+    
         $curl = curl_init();
 
         $url = $this->rest_url .$endpoint;
-		
+        
         switch ($method)
         {
             case "POST":
@@ -146,8 +146,8 @@ class repository_dspace extends repository {
         } 
 
         curl_setopt($curl, CURLOPT_URL, $url);
-		curl_setopt($curl, CURLOPT_VERBOSE, true);
-		curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($curl, CURLOPT_VERBOSE, true);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
 
         curl_setopt($curl, CURLOPT_HTTPHEADER, array('Accept: application/json'));
 
@@ -157,7 +157,7 @@ class repository_dspace extends repository {
 
         return json_decode($result); 
     }
-	 public function set_option($options = array()) {
+    public function set_option($options = array()) {
         if (!empty($options['dspace_url'])) {
             set_config('dspace_url', trim($options['dspace_url']), 'dspace');
         }
@@ -165,13 +165,29 @@ class repository_dspace extends repository {
         $ret = parent::set_option($options);
         return $ret;
       }
-	  public function get_option($config = '') {
+      public function get_option($config = '') {
         if (preg_match('/^dspace_/', $config)) {
             return trim(get_config('dspace', $config));
         }
 
         $options = parent::get_option($config);
         return $options;
+    }
+
+    /**
+    * External reference section
+    */
+    public function get_reference_file_lifetime($ref) {
+        return 60 * 60 * 24; // One day
+    }
+
+    public function send_file($stored_file, $lifetime=86400 , $filter=0, $forcedownload=false, array $options = null) {
+        $url =$stored_file->get_reference();
+        if ($url) {
+            header('Location: ' . $url);
+        } else {
+            send_file_not_found();
+        }
     }
 }
 
