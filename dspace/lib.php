@@ -4,7 +4,7 @@ class repository_dspace extends repository {
 
     public $rest_url = 'http://localhost:8080/rest/';
     
-    public function __construct($repositoryid, $context = SYSCONTEXTID, $options = array(), $readonly=0) {
+    public function __construct($repositoryid, $context = SYSCONTEXTID, $options = array(), $readonly=TRUE) {
         parent::__construct($repositoryid, $context, $options, $readonly);
         $this->rest_url = $this->get_option('dspace_url');
     }
@@ -15,7 +15,7 @@ class repository_dspace extends repository {
      * @see repository::supported_returntypes()
      */
     function supported_returntypes() {
-        return FILE_REFERENCE;
+        return FILE_EXTERNAL;
     }
 
     function supported_filetypes()   {
@@ -32,10 +32,12 @@ class repository_dspace extends repository {
     }
 
     public static function type_config_form($mform, $classname='repository') {
-        parent::type_config_form($mform);
-    
+        parent::type_config_form($mform, $classname);
+        
+        
         $dspaceUrl = get_config('repository_dspace', 'dspace_url');
-        $mform->addElement('text', 'dspace_url', get_string('dspace_url', 'repository_dspace'), array('value' => $dspaceUrl,'size' => '60'));
+        $mform->addElement('text', 'dspace_url', get_string('dspace_url', 'repository_dspace'), array('value' => $dspaceUrl,'size' => '40'));
+        $mform->setType('dspace_url', PARAM_TEXT);
     }
 
     // Listing
@@ -184,20 +186,22 @@ class repository_dspace extends repository {
 
         return json_decode($result); 
     }
+    
     public function set_option($options = array()) {
-        if (!empty($options['dspace_url'])) {
-            set_config('dspace_url', trim($options['dspace_url']), 'dspace');
+        if (! empty ( $options ['dspace_url'] )) {
+            set_config ( 'dspace_url', trim ( $options ['dspace_url'] ), 'dspace' );
         }
-        unset($options['dspace_url']);
-        $ret = parent::set_option($options);
+        unset ( $options ['dspace_url'] );
+        $ret = parent::set_option ( $options );
         return $ret;
-      }
-      public function get_option($config = '') {
-        if (preg_match('/^dspace_/', $config)) {
-            return trim(get_config('dspace', $config));
+    }
+    
+    public function get_option($config = '') {
+        if (preg_match ( '/^dspace_/', $config )) {
+            return trim ( get_config ( 'dspace', $config ) );
         }
-
-        $options = parent::get_option($config);
+        
+        $options = parent::get_option ( $config );
         return $options;
     }
 
