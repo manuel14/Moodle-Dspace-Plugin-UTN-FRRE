@@ -95,11 +95,12 @@ class repository_dspace extends repository {
         $list['path'] = array();
         
         while (count($pathArray) > 0) {
-            $lastItem =  (array) $pathArray[0];
-            $list['path'] [] = array(
+            $lastItem =  (array) end($pathArray);
+            array_unshift($list['path'], array(
                     'path'=>json_encode($pathArray), 
-                    'name'=> strlen($lastItem['name']) <= 20 ? $lastItem['name'] : substr($lastItem['name'], 0, 17).'...');
-            array_shift($pathArray);
+                    'name'=> strlen($lastItem['name']) <= 20 ? $lastItem['name'] : substr($lastItem['name'], 0, 17).'...'));
+            array_pop($pathArray);
+            
         }
         return $list;
     }
