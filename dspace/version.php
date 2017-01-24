@@ -1,7 +1,8 @@
 <?php
 /**
  * @package   repository_dspace
- * @copyright 2015, 
+ * @copyright 2015-2016, 
+ * Patricio Marrone <marrone.patricio@gmail.com>
  * Bruno Demartino <demartinoba@gmail.com>
  * Leonardo Zaragoza <leozaragoza@gmail.com>
  * Marcelo Espinoza <marceloespinoza00@gmail.com>
@@ -10,4 +11,6 @@
  */
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version   = 20150830;
+$plugin->version   = 20160414;
+$plugin->component = 'repository_dspace';
+$plugin->release = '1.0.0';
